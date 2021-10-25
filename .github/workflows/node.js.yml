@@ -9,6 +9,7 @@ on:
       - main
       - master
       - develop
+      - new_config_script
   pull_request:
     branches:
       - main
