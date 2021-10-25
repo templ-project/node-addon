@@ -1,0 +1,24 @@
+{
+  "targets": [
+    {
+      "target_name": "main",
+      "sources": [
+{% for file in srcFiles %}
+        "{{file}}"{% if loop.last == false %},{% endif %}
+
+{% endfor %}
+      ],
+      "link_settings": {},
+      "include_dirs": [
+        "<!@(node -p \"require('node-addon-api').include\")"
+      ],
+      'defines': ['NAPI_DISABLE_CPP_EXCEPTIONS'],
+      "cflags_cc": [
+        "-std={{cppStandards[0]}}"{#  -x c++ #}
+      ],
+      "cflags_cc!": [
+        "-std=gnu++1y"
+      ]
+    }
+  ]
+}
