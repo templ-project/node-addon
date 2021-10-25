@@ -7,9 +7,8 @@
       ],
       "link_settings": {},
       "include_dirs": [
-        "<!@(node -p \"require('node-addon-api').include\")"
+        "<!(node -e \"require('nan')\")"
       ],
-      'defines': ['NAPI_DISABLE_CPP_EXCEPTIONS'],
       "cflags_cc": [
         "-std=c++11"
       ],

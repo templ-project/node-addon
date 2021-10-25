@@ -10,9 +10,16 @@
       ],
       "link_settings": {},
       "include_dirs": [
+{% if api == 'nan' %}
+        "<!(node -e \"require('nan')\")"
+{% elseif api == 'napi' %}
+{% else %}
         "<!@(node -p \"require('node-addon-api').include\")"
+{% endif %}
       ],
+{% if api == 'node-addon-api' %}
       'defines': ['NAPI_DISABLE_CPP_EXCEPTIONS'],
+{% endif %}
       "cflags_cc": [
         "-std={{cppStandards[0]}}"{#  -x c++ #}
       ],

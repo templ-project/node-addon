@@ -10,6 +10,7 @@ const supportedBuildSystems = require('./supported-build-systems');
 const supportedIdes = require('./supported-ides');
 const nodeModulesNanFolder = require('./node-modules-nan-folder');
 const nodeModulesNapiFolder = require('./node-modules-napi-folder');
+const supportedNodeLibs = require('./supported-node-libs');
 
 /**
  * Will calculate list of libraries that need included in the C++ config files.
@@ -34,11 +35,11 @@ module.exports = (options) => {
   // will be dependent on node-gyp files
   // if (options.buildSystem === supportedBuildSystems.XMAKE) {}
 
-  if (packageJsonContainsNan()) {
+  if (options.api === supportedNodeLibs.nan) {
     folders.push(nodeModulesNanFolder);
   }
 
-  if (packageJsonContainsNapi()) {
+  if (options.api === supportedNodeLibs.napiCpp) {
     folders.push(nodeModulesNapiFolder);
   }
 

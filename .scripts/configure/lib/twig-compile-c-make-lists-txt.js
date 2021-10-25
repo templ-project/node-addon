@@ -12,6 +12,7 @@ const nodeModulesNapiFolder = require('./node-modules-napi-folder');
 const packageJsonContainsNan = require('./package-json-contains-nan');
 const packageJsonContainsNapi = require('./package-json-contains-napi');
 const twigCompile = require('./twig-compile');
+const supportedNodeLibs = require('./supported-node-libs');
 
 /**
  * Will compile binding.gyp file.
@@ -46,10 +47,11 @@ module.exports = async (options) => {
     fs.writeFileSync(
       filePath,
       twigCompile('CMakeLists.txt', {
+        api: options.api,
         folders,
         srcFiles,
-        hasNapi: packageJsonContainsNapi(),
-        hasNan: packageJsonContainsNan(),
+        hasNapi: options.api === supportedNodeLibs.napiCpp,
+        hasNan: options.api === supportedNodeLibs.nan,
         cppStandards: options.cppStandard.map((x) => x.replace(/cxx|gnuxx/, '')),
         cStandards: options.cStandard.map((x) => x.replace(/c|gnu/, '')),
       }),
