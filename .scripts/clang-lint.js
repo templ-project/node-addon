@@ -12,7 +12,7 @@ const utilsLibraryFolders = require('./configure/lib/utils-library-folders');
 const debug = process.env.DEBUG ? true : false;
 
 async function main() {
-  let includes = utilsLibraryFolders('gyp').map((include) => `-I${include}`);
+  let includes = utilsLibraryFolders({}).map((include) => `-I${include}`);
   includes = [...new Set(includes)];
 
   const clangTidy = await osGetCommandPath('clang-tidy');

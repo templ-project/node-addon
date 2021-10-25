@@ -1,15 +1,8 @@
-const npmview = require('npmview');
+const {getLatest} = require('npm-latest');
 
 module.exports = async (name) => {
   console.log(`Fetching ${name} package latest version ...`.gray);
-  return new Promise((resolve, reject) => {
-    npmview(name, (err, version, info) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      console.log(version.gray);
-      resolve(version);
-    });
-  });
+  const {version} = await getLatest(name);
+  console.log(version.gray);
+  return version;
 };

@@ -35,11 +35,11 @@ module.exports = (options) => {
   // will be dependent on node-gyp files
   // if (options.buildSystem === supportedBuildSystems.XMAKE) {}
 
-  if (options.api === supportedNodeLibs.nan) {
+  if (options.api === supportedNodeLibs.nan || (!options.api && packageJsonContainsNan())) {
     folders.push(nodeModulesNanFolder);
   }
 
-  if (options.api === supportedNodeLibs.napiCpp) {
+  if (options.api === supportedNodeLibs.napiCpp || (!options.api && packageJsonContainsNapi())) {
     folders.push(nodeModulesNapiFolder);
   }
 

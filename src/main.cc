@@ -2,64 +2,37 @@
 #define BUILDING_NODE_EXTENSION
 #endif
 
-
-#define if_unmet_throw(call, thrower, error)                               \
+#define if_unmet_throw(call, thrower, error)                                   \
   if (!(call)) {                                                               \
-    thrower(error);                                                            \
+    thrower::New(env, error).ThrowAsJavaScriptException();                     \
   }
 
-#include <nan.h>
-#include <node.h>
-#include <v8.h>
+#include <napi.h>
 
-void Hello(const Nan::FunctionCallbackInfo<v8::Value>& info) {
-  v8::Isolate* isolate = info.GetIsolate();
-  v8::Local<v8::Context> context = isolate->GetCurrentContext();
-  v8::Local<v8::String> who;
+Napi::String Method(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  std::string result = "Hello ";
 
   if (info.Length() < 1) {
-    if_unmet_throw(
-        Nan::New("World").ToLocal(&who), Nan::ThrowError, "unable to allocate")
+    result += "World";
   } else {
-    if_unmet_throw(info[0]->IsString(),
-                       Nan::ThrowTypeError,
-                       "Invalid argument type; expecting string.")
-        if_unmet_throw(info[0]->ToString(context).ToLocal(&who),
-                           Nan::ThrowRangeError,
-                           "could not read arguments")
+    if_unmet_throw(info[0].IsString(),
+                   Napi::TypeError,
+                   "Invalid argument type; expecting string.")
+
+        result += info[0].As<Napi::String>().Utf8Value();
   }
 
-  v8::Local<v8::String> hello;
-  if_unmet_throw(
-      Nan::New("Hello ").ToLocal(&hello), Nan::ThrowError, "unable to allocate")
+  result += "!";
 
-      v8::Local<v8::String>
-          em;
-  if_unmet_throw(
-      Nan::New("!").ToLocal(&em), Nan::ThrowError, "unable to allocate")
-
-      hello = v8::String::Concat(isolate, hello, who);
-  hello = v8::String::Concat(isolate, hello, em);
-
-  info.GetReturnValue().Set(hello);
+  return Napi::String::New(env, result);
 }
 
-void Init(v8::Local<v8::Object> exports,
-          v8::Local<v8::Value> /*module*/,
-          void* /*priv*/) {
-  v8::Local<v8::Context> context = exports->CreationContext();
-  bool hasConverted = true;
-  if_unmet_throw(exports
-                         ->Set(context,
-                               Nan::New("hello").ToLocalChecked(),
-                               Nan::New<v8::FunctionTemplate>(Hello)
-                                   ->GetFunction(context)
-                                   .ToLocalChecked())
-                         .To(&hasConverted),
-                     Nan::ThrowError,
-                     "unable to determine the map of 'hello' method");
-  if_unmet_throw(
-      hasConverted, Nan::ThrowError, "unable to map 'hello' method")
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+  exports.Set(Napi::String::New(env, "hello"),
+              Napi::Function::New(env, Method));
+  return exports;
 }
 
-NODE_MODULE(hello, Init)
+NODE_API_MODULE(hello, Init)
