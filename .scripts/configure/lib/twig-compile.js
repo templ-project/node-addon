@@ -16,6 +16,7 @@ module.exports = (name, twigValues = {}, isJson = false) => {
   console.log(`Reading ${filePath}`.gray);
 
   const compiled = twig({
+    allowInlineIncludes: true,
     data: fs.readFileSync(filePath).toString(),
   }).render(twigValues);
 

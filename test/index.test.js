@@ -17,6 +17,6 @@ describe('hello', function () {
 
   it('hello(1) to throw type exception', function () {
     const thrower = () => hello(1);
-    expect(thrower).to.throw(TypeError, 'Invalid argument type; expecting string.');
+    expect(thrower).to.throw(TypeError, 'Invalid argument type; expecting string');
   });
 });

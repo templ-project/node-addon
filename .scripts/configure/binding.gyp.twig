@@ -21,7 +21,10 @@
       'defines': ['NAPI_DISABLE_CPP_EXCEPTIONS'],
 {% endif %}
       "cflags_cc": [
+{% if api == 'napi' %}
+{% else %}
         "-std={{cppStandards[0]}}"{#  -x c++ #}
+{% endif %}
       ],
       "cflags_cc!": [
         "-std=gnu++1y"
