@@ -14,7 +14,8 @@
         "-std=c++11"
       ],
       "cflags_cc!": [
-        "-std=gnu++1y"
+        "-std=gnu++1y", # comes from node 12+
+        "-std=gnu++17"  # comes from node 16+ with NAN
       ]
     }
   ]

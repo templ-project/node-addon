@@ -22,7 +22,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x, 17.x]
+        # , 17.x]
+        node-version: [12.x, 14.x, 16.x]
         # build-system: [gyp, cmake, xmake]
         build-system: [gyp, cmake]
         node-api: [nan, napi, node-addon-api]
@@ -43,6 +44,10 @@ jobs:
       #   run: bash <(curl -fsSL https://xmake.io/shget.text)
       #   if: ${{ matrix.build-system == 'xmake' }}
       - name: Init
+        if: ${{matrix.node-version == '16.x'}}
+        run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17
+      - name: Init
+        if: ${{matrix.node-version != '16.x'}}
         run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
       - name: Code Analysis
         run: npm run ca
