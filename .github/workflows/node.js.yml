@@ -45,13 +45,16 @@ jobs:
       # - name: Make Build System Available (CMake)
       #   run: bash <(curl -fsSL https://xmake.io/shget.text)
       #   if: ${{ matrix.build-system == 'xmake' }}
-      - name: Init
-        if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
-        run: npm i --legacy-peer-deps && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17 && cat binding.gyp
+      - name: configure.js
+        run: npm i --legacy-peer-deps --ignore-scripts
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
-      - name: Init
+      - name: configure.js (nan/node-16+)
+        if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
+        run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17 && cat binding.gyp
+        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+      - name: configure.js
         if: ${{matrix.node-version != '16.x'}}
-        run: npm i --legacy-peer-deps && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
+        run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
       - name: Re-Init
         run: npm i --legacy-peer-deps
       - name: Code Analysis
