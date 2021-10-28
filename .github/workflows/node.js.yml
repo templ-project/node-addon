@@ -47,10 +47,11 @@ jobs:
       #   if: ${{ matrix.build-system == 'xmake' }}
       - name: Init
         if: ${{matrix.node-version == '16.x'}}
-        run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17 && cat binding.gyp
+        run: npm i --legacy-peer-deps && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17 && cat binding.gyp
+        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
       - name: Init
         if: ${{matrix.node-version != '16.x'}}
-        run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
+        run: npm i --legacy-peer-deps && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
       - name: Code Analysis
         run: npm run ca
       - name: Code UnitTests
