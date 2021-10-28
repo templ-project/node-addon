@@ -56,7 +56,7 @@ jobs:
         if: ${{matrix.node-version != '16.x'}}
         run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
       - name: (re) npm i
-        run: npm i --legacy-peer-deps
+        run: npm i --legacy-peer-deps --ignore-scripts
       - name: Code Analysis
         run: npm run ca
       - name: Code UnitTests
