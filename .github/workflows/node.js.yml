@@ -40,12 +40,12 @@ jobs:
       - name: Make CLang Available
         run: sudo apt-get install -y clang-tidy clang-format
       - name: Make Build System Available (CMake)
-        run: sudo apt-get install -y cmake
         if: ${{ matrix.build-system == 'cmake' }}
-      # - name: Make Build System Available (CMake)
-      #   run: bash <(curl -fsSL https://xmake.io/shget.text)
+        run: sudo apt-get install -y cmake
+      # - name: Make Build System Available (XMake)
       #   if: ${{ matrix.build-system == 'xmake' }}
-      - name: configure.js
+      #   run: bash <(curl -fsSL https://xmake.io/shget.text)
+      - name: npm i
         run: npm i --legacy-peer-deps --ignore-scripts
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
       - name: configure.js (nan/node-16+)
@@ -55,7 +55,7 @@ jobs:
       - name: configure.js
         if: ${{matrix.node-version != '16.x'}}
         run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
-      - name: Re-Init
+      - name: (re) npm i
         run: npm i --legacy-peer-deps
       - name: Code Analysis
         run: npm run ca
