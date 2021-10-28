@@ -45,14 +45,14 @@ jobs:
       #   if: ${{ matrix.build-system == 'xmake' }}
       - name: Init
         if: ${{matrix.node-version == '16.x'}}
-        run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17
+        run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl -cpps cxx17 && cat binding.gyp
       - name: Init
         if: ${{matrix.node-version != '16.x'}}
         run: npm i && node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e none -omc -ucl
       - name: Code Analysis
         run: npm run ca
       - name: Code UnitTests
-        run: npm run test
+        run: cat binding.gyp && npm run test
       - name: Code Build
         run: npm run build
       - name: Code Docs
