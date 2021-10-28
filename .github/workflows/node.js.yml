@@ -22,8 +22,10 @@ jobs:
 
     strategy:
       matrix:
-        # , 17.x]
-        node-version: [12.x, 14.x, 16.x]
+        node-version:
+          # - 12.x
+          # - 14.x
+          - 16.x
         # build-system: [gyp, cmake, xmake]
         build-system: [gyp, cmake]
         node-api: [nan, napi, node-addon-api]
