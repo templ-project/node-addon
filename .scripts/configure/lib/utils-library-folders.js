@@ -22,14 +22,12 @@ const supportedNodeLibs = require('./supported-node-libs');
 module.exports = (options) => {
   let folders = ['', 'openssl']
     .map((item) => [item, path.join(nodeLibLocationGyp[process.platform], item)])
-    .reduce((acc, item) => [].concat(acc, item), [])
-    .filter(pathIsValid);
+    .reduce((acc, item) => [].concat(acc, item), []);
 
   if (options.buildSystem === supportedBuildSystems.CMAKE || options.ide === supportedIdes.CLION) {
     folders = ['', 'openssl']
       .map((item) => [item, path.join(nodeLibLocationCmake[process.platform], item)])
-      .reduce((acc, item) => [].concat(acc, item), [])
-      .filter(pathIsValid);
+      .reduce((acc, item) => [].concat(acc, item), []);
   }
 
   // will be dependent on node-gyp files
@@ -48,5 +46,7 @@ module.exports = (options) => {
     folders = folders.map((item) => item.replace(/\\/g, '/'));
   }
 
-  return folders;
+  console.debug(`Library folders: ${JSON.stringify(folders)}`.gray);
+
+  return folders.filter(pathIsValid);
 };
