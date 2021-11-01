@@ -46,7 +46,7 @@ jobs:
       #   if: ${{ matrix.build-system == 'xmake' }}
       #   run: bash <(curl -fsSL https://xmake.io/shget.text)
       - name: npm i (pre configure.js)
-        run: npm i --legacy-peer-deps
+        run: npm i --force
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
       - name: configure.js (nan/node-16+)
         if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
