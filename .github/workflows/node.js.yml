@@ -61,10 +61,10 @@ jobs:
         run: npm i --legacy-peer-deps --ignore-scripts
       # - name: Code Analysis
       #   run: npm run ca
-      # - name: Code UnitTests
-      #   run: cat binding.gyp && npm run test
-      # - name: Code Build
-      #   run: npm run build
+      - name: Code UnitTests
+        run: cat binding.gyp && npm run test
+      - name: Code Build
+        run: npm run build
       # - name: Code Docs
       #   if: ${{ matrix.node-version == '16.x' }}
       #   run: npm run docs
