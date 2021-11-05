@@ -61,7 +61,7 @@ jobs:
         run: echo bash <(curl -fsSL https://xmake.io/shget.text)
 
       - name: npm i (pre configure.js)
-        run: npm i --legacy-peer-deps
+        run: npm i --legacy-peer-deps || true
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
       - name: check (pre configure.js)
