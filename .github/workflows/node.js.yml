@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os:
-          # - macos-latest
+          - macos-latest
           # - windows-latest
           - ubuntu-latest
         node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
@@ -48,8 +48,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Make CLang Available
+      - name: CLang (Linux)
+        if: ${{ matric.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y clang-tidy clang-format && clang-tidy --version
+
+      - name: CLang (Mac OS)
+        if: ${{ matric.os == 'macos-latest' }}
+        run: brew install llvm && clang-tidy --version
 
       - name: Make Build System Available (CMake)
         if: ${{ matrix.build-system == 'cmake' }}
