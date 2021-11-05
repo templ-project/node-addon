@@ -49,11 +49,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: CLang (Linux)
-        if: ${{ matric.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y clang-tidy clang-format && clang-tidy --version
 
       - name: CLang (Mac OS)
-        if: ${{ matric.os == 'macos-latest' }}
+        if: ${{ matrix.os == 'macos-latest' }}
         run: brew install llvm && clang-tidy --version
 
       - name: Make Build System Available (CMake)
