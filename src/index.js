@@ -1,4 +1,4 @@
-module.exports = require('bindings')('main');
+const main = require('bindings')('main');
 
 /*******************************************************************************
  * Document here your exported functions.
@@ -10,4 +10,8 @@ module.exports = require('bindings')('main');
  * @param {string} name
  * @return {string}
  */
-function hello(name) {}
+function hello(name) {
+  return main.hello(name);
+}
+
+module.exports = {hello};
