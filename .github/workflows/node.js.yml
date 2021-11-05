@@ -17,54 +17,81 @@ on:
       - develop
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  main:
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        node-version:
+        os:
+          # - macos-latest
+          # - windows-latest
+          - ubuntu-latest
+        node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
           # - 12.x
           # - 14.x
           - 16.x
-        # build-system: [gyp, cmake, xmake]
-        build-system: [gyp, cmake]
-        node-api: [nan, napi, node-addon-api]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+          # - 17.x
+        build-system:
+          - gyp
+          # - cmake
+          # - xmake
+        node-api:
+          - nan
+          - napi
+          - node-addon-api
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Make CLang Available
         run: sudo apt-get install -y clang-tidy clang-format && clang-tidy --version
+
       - name: Make Build System Available (CMake)
         if: ${{ matrix.build-system == 'cmake' }}
         run: sudo apt-get install -y cmake && cmake --version
-      # - name: Make Build System Available (XMake)
-      #   if: ${{ matrix.build-system == 'xmake' }}
-      #   run: bash <(curl -fsSL https://xmake.io/shget.text)
+
+      - name: Make Build System Available (XMake)
+        if: ${{ matrix.build-system == 'xmake' }}
+        # run: bash <(curl -fsSL https://xmake.io/shget.text)
+        run: echo bash <(curl -fsSL https://xmake.io/shget.text)
+
       - name: npm i (pre configure.js)
-        run: npm i --force
-        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
-      - name: configure.js (nan/node-16+)
-        if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
-        run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc -ucl -cpps cxx17
-        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
-      - name: configure.js
-        if: ${{matrix.node-version != '16.x' || (matrix.node-version == '16.x' && matrix.node-api != 'nan')}}
-        run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc -ucl
-      - name: post configure.js
-        run: cat binding.gyp && cat compile_flags.txt
-      - name: (re) npm i
         run: npm i --legacy-peer-deps --ignore-scripts
-      # - name: Code Analysis
-      #   run: npm run ca
-      - name: Code UnitTests
-        run: cat binding.gyp && npm run test
-      - name: Code Build
-        run: npm run build
-      # - name: Code Docs
-      #   if: ${{ matrix.node-version == '16.x' }}
-      #   run: npm run docs
+        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+
+      - name: check (pre configure.js)
+        run: ls -la $HOME/.cache/node-gyp ; ls -la $HOME/.cmake-js/node-x64
+        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+
+      # - name: configure.js (nan/node-16+)
+      #   if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
+      #   run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc -ucl -cpps cxx17
+
+      # - name: configure.js
+      #   if: ${{matrix.node-version != '16.x' || (matrix.node-version == '16.x' && matrix.node-api != 'nan')}}
+      #   run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc -ucl
+
+      # - name: post configure.js
+      #   run: cat binding.gyp && cat compile_flags.txt
+
+      # - name: (re) npm i
+      #   run: npm i --legacy-peer-deps --ignore-scripts
+      #   # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+
+      # # - name: Code Analysis
+      # #   run: npm run ca
+
+      # - name: Code UnitTests
+      #   run: cat binding.gyp && npm run test
+
+      # - name: Code Build
+      #   run: npm run build
+
+      # # - name: Code Docs
+      # #   if: ${{ matrix.node-version == '16.x' }}
+      # #   run: npm run docs

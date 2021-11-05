@@ -15,8 +15,12 @@ async function main() {
   let includes = utilsLibraryFolders({}).map((include) => `-I${include}`);
   includes = [...new Set(includes)];
 
-  const clangTidy = await osGetCommandPath('clang-tidy');
-  if (!clangTidy) {
+  const binaries = await Promise.all(
+    ['clang-tidy-12', 'clang-tidy-11', 'clang-tidy-10', 'clang-tidy'].map((binary) => osGetCommandPath(binary)),
+  );
+  const validBinaries = binaries.filter((x) => x.length > 0);
+
+  if (validBinaries.length === 0) {
     console.error('C++ linting & prettify are dependent on LLVM CLang binaries.'.red);
     console.error(`Could not find 'clang-tidy'. Please install LLVM Clang from`.red);
     console.error('https://github.com/llvm/llvm-project/releases'.yellow);
@@ -25,6 +29,7 @@ async function main() {
     console.error('$ cd config/lang; make clang'.gray);
     process.exit(1);
   }
+  const clangTidy = validBinaries.shift();
 
   const commands = await globby(process.argv[2]).then((files) =>
     files.map((file) => ({
