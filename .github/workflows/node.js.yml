@@ -74,9 +74,8 @@ jobs:
         run: npm i --legacy-peer-deps || true
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
-      - name: check (pre configure.js)
-        run: ls -la $HOME/.cache/node-gyp || ls -la $HOME/.cmake-js/node-x64
-        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+      # - name: check (pre configure.js)
+      #   run: ls -la $HOME/.cache/node-gyp || ls -la $HOME/.cmake-js/node-x64
 
       - name: configure.js (nan/node-16+)
         if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
