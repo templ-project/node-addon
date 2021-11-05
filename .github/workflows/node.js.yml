@@ -92,6 +92,26 @@ jobs:
       - name: Code Build
         run: npm run build
 
-      # # - name: Code Docs
-      # #   if: ${{ matrix.node-version == '16.x' }}
-      # #   run: npm run docs
+      - name: Code Docs
+        if: ${{ matrix.node-version == '16.x' }}
+        run: npm run docs
+#   sonarcloud:
+#     name: SonarCloud
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#       - name: Init
+#         run: npm i
+#       - name: Code Analysis
+#         run: npm run lint:log || true
+#       - name: Code UnitTests
+#         run: npm run test
+#       - name: Build Wrapper
+#         run: build-wrapper-linux-x86-64 --out-dir bw-output npm run build
+#       - name: SonarCloud Scan
+#         uses: SonarSource/sonarcloud-github-action@master
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
