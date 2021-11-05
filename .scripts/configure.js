@@ -84,6 +84,8 @@ if (
 }
 
 (async () => {
+  twigCompileMainCc(options);
+
   bsConfigure(options);
   await vscodeConfigure(options);
 
@@ -93,8 +95,6 @@ if (
   if (options.ide === supportedIdes.CLION) {
     twigCompileCMakeListsTxt(options);
   }
-
-  twigCompileMainCc(options);
 
   await packageJsonConfigure(options);
 })();

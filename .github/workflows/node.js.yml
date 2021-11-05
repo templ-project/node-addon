@@ -27,9 +27,9 @@ jobs:
           # - windows-latest
           - ubuntu-latest
         node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-          # - 12.x
-          # - 14.x
-          - 16.x
+          # - 12.x # to be removed 2022-04-30
+          # - 14.x # to be removed 2023-04-30
+          - 16.x # to be removed 2024-04-30
           # - 17.x
         build-system:
           - gyp
