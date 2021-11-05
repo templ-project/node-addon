@@ -10,4 +10,6 @@ module.exports = require('bindings')('main');
  * @param {string} name
  * @return {string}
  */
-function hello(name) {}
+function hello(name = 'World') {
+  return `Hello ${name}!`;
+}
