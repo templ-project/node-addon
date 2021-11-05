@@ -61,11 +61,11 @@ jobs:
         run: echo bash <(curl -fsSL https://xmake.io/shget.text)
 
       - name: npm i (pre configure.js)
-        run: npm i --legacy-peer-deps --ignore-scripts
+        run: npm i --legacy-peer-deps
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
       - name: check (pre configure.js)
-        run: ls -la $HOME/.cache/node-gyp ; ls -la $HOME/.cmake-js/node-x64
+        run: ls -la $HOME/.cache/node-gyp || ls -la $HOME/.cmake-js/node-x64
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
       # - name: configure.js (nan/node-16+)
