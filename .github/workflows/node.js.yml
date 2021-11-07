@@ -71,7 +71,9 @@ jobs:
           Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/LLVM-12.0.0-win64.exe -OutFile ./llvm.exe &&
           ./llvm.exe /S &&
           clang-tidy --version &&
-          clang-format --version
+          clang-format --version &&
+          (Get-Command clang-tidy).FullName &&
+          (Get-Command clang-format).FullName
 
       - name: Make Build System Available (CMake)
         if: ${{ matrix.build-system == 'cmake' }}

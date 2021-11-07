@@ -15,21 +15,24 @@ async function main() {
   let includes = utilsLibraryFolders({}).map((include) => `-I${include}`);
   includes = [...new Set(includes)];
 
-  const binaries = await Promise.all(
-    ['clang-tidy-12', 'clang-tidy-11', 'clang-tidy-10', 'clang-tidy'].map((binary) => osGetCommandPath(binary)),
-  );
-  const validBinaries = binaries.filter((x) => x.length > 0);
+  if (!process.env.CLANG_TIDY_BINARY) {
+    const binaries = await Promise.all(
+      ['clang-tidy-12', 'clang-tidy-11', 'clang-tidy-10', 'clang-tidy'].map((binary) => osGetCommandPath(binary)),
+    );
+    const validBinaries = binaries.filter((x) => x.length > 0);
 
-  if (validBinaries.length === 0) {
-    console.error('C++ linting & prettify are dependent on LLVM CLang binaries.'.red);
-    console.error(`Could not find 'clang-tidy'. Please install LLVM Clang from`.red);
-    console.error('https://github.com/llvm/llvm-project/releases'.yellow);
-    console.error('or run'.gray);
-    console.error('$ git clone https://github.com/dragoscirjan/configs --branch v2;'.gray);
-    console.error('$ cd config/lang; make clang'.gray);
-    process.exit(1);
+    if (validBinaries.length === 0) {
+      console.error('C++ linting & prettify are dependent on LLVM CLang binaries.'.red);
+      console.error(`Could not find 'clang-tidy'. Please install LLVM Clang from`.red);
+      console.error('https://github.com/llvm/llvm-project/releases'.yellow);
+      console.error('or run'.gray);
+      console.error('$ git clone https://github.com/dragoscirjan/configs --branch v2;'.gray);
+      console.error('$ cd config/lang; make clang'.gray);
+      process.exit(1);
+    }
   }
-  const clangTidy = validBinaries.shift();
+
+  const clangTidy = process.env.CLANG_TIDY_BINARY ? process.env.CLANG_TIDY_BINARY : validBinaries.shift();
 
   const commands = await globby(process.argv[2]).then((files) =>
     files.map((file) => ({
