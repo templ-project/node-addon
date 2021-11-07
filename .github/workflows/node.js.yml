@@ -109,14 +109,14 @@ jobs:
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
       - name: Code Analysis (!Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os != 'windows-latest' }}
         run: npm run ca
         env:
           DEBUG: true
 
       # TODO: clang-format doesn't work yet
       - name: Code Analysis (Windows)
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-latest' }}
         run: |
           npm run prettier:js:write &&
           npm run lint:write &&
