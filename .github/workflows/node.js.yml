@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os:
-          # - macos-latest
+          - macos-latest
           # - ubuntu-latest
           - windows-latest
         node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
@@ -32,8 +32,8 @@ jobs:
           # - 16.x # to be removed 2024-04-30
           # - 17.x # to be removed 2022-04-01
         build-system:
-          - gyp
-          # - cmake
+          # - gyp
+          - cmake
           # - xmake
         node-api:
           - nan
@@ -77,9 +77,18 @@ jobs:
           echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
           echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
 
+      - name: Make Build System Available (CMake) (MacOS)
+        if: ${{ matrix.build-system == 'cmake' && matrix.os == 'macos-latest' }}
+        run:  brew install cmake && cmake --version
+
       - name: Make Build System Available (CMake) (Linux)
-        if: ${{ matrix.build-system == 'cmake' }}
+        if: ${{ matrix.build-system == 'cmake' && matrix.os == 'ubuntu-latest' }}
         run: sudo apt-get install -y cmake && cmake --version
+
+      - name: Make Build System Available (CMake) (Windows)
+        if: ${{ matrix.os == 'windows-latest' && matrix.os == 'windows-latest' }}
+        uses: crazy-max/ghaction-chocolatey@v1
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && cmake --version
 
       - name: Make Build System Available (XMake)
         if: ${{ matrix.build-system == 'xmake' }}
