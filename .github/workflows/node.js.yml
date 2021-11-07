@@ -72,8 +72,8 @@ jobs:
           ./llvm.exe /S &&
           clang-tidy --version &&
           clang-format --version &&
-          (Get-Command clang-tidy).Path &&
-          (Get-Command clang-format).Path
+          $env:CLANG_TIDY_BINARY = (Get-Command clang-tidy).Path &&
+          $env:CLANG_FORMAT_BINARY = (Get-Command clang-format).Path
 
       - name: Make Build System Available (CMake) (Linux)
         if: ${{ matrix.build-system == 'cmake' }}
