@@ -65,6 +65,8 @@ jobs:
           clang-tidy --version &&
           clang-format --version
 
+        # echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path)" >> $env:GITHUB_ENV &&
+        # echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path)"  >> $env:GITHUB_ENV &&
       - name: CLang (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
@@ -72,8 +74,6 @@ jobs:
           ./llvm.exe /S &&
           clang-tidy --version &&
           clang-format --version &&
-          echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path)" >> $env:GITHUB_ENV &&
-          echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path)"  >> $env:GITHUB_ENV
           echo "CLANG_TIDY_BINARY=clang-tidy" >> $env:GITHUB_ENV &&
           echo "CLANG_FORMAT_BINARY=clang-format"  >> $env:GITHUB_ENV
 
