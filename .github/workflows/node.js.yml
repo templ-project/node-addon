@@ -72,8 +72,8 @@ jobs:
           ./llvm.exe /S &&
           clang-tidy --version &&
           clang-format --version &&
-          echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\\', '/'))" >> $env:GITHUB_ENV &&
-          echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\\', '/'))"  >> $env:GITHUB_ENV
+          echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
+          echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
 
       - name: Make Build System Available (CMake) (Linux)
         if: ${{ matrix.build-system == 'cmake' }}
