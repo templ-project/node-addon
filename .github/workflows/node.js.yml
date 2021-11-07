@@ -76,7 +76,6 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           choco install llvm &&
-          ./llvm.exe /S &&
           clang-tidy --version &&
           clang-format --version &&
           (Get-Command clang-tidy).Path &&
