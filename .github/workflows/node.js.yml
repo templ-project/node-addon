@@ -23,13 +23,13 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-latest
-          # - windows-latest
-          - ubuntu-latest
+          # - macos-latest
+          # - ubuntu-latest
+          - windows-latest
         node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
           - 12.x # to be removed 2022-04-30
-          - 14.x # to be removed 2023-04-30
-          - 16.x # to be removed 2024-04-30
+          # - 14.x # to be removed 2023-04-30
+          # - 16.x # to be removed 2024-04-30
           # - 17.x # to be removed 2022-04-01
         build-system:
           - gyp
@@ -37,8 +37,8 @@ jobs:
           # - xmake
         node-api:
           - nan
-          - napi
-          - node-addon-api
+          # - napi
+          # - node-addon-api
 
     steps:
       - uses: actions/checkout@v2
@@ -60,6 +60,13 @@ jobs:
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy" &&
           ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements" &&
           clang-tidy --version
+
+      - name: CLang (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          powershell -Command 'Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/LLVM-12.0.0-win64.exe -OutFile ./llvm.exe'
+          powershell -Command './llvm.exe /S'
+          powershell -Command 'clang-tidy --version'
 
       - name: Make Build System Available (CMake)
         if: ${{ matrix.build-system == 'cmake' }}
