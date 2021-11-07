@@ -32,5 +32,10 @@ module.exports = async (command, timeout = 20000) => {
       clearTimeout(t);
       resolve({stdout, stderr, code});
     });
+
+    runner.on('error', (err) => {
+      clearTimeout(t);
+      resolve({stdout, `${stderr}${err}`, code: 255});
+    });
   });
 };
