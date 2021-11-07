@@ -50,7 +50,10 @@ jobs:
 
       - name: CLang (Linux)
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: sudo apt-get install -y clang-tidy clang-format && clang-tidy --version
+        run: |
+          sudo apt-get install -y clang-tidy clang-format &&
+          clang-tidy --version &&
+          clang-format --version
 
       - name: CLang (Mac OS)
         if: ${{ matrix.os == 'macos-latest' }}
@@ -59,14 +62,16 @@ jobs:
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format" &&
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy" &&
           ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements" &&
-          clang-tidy --version
+          clang-tidy --version &&
+          clang-format --version
 
       - name: CLang (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/LLVM-12.0.0-win64.exe -OutFile ./llvm.exe &&
           ./llvm.exe /S &&
-          clang-tidy --version
+          clang-tidy --version &&
+          clang-format --version
 
       - name: Make Build System Available (CMake)
         if: ${{ matrix.build-system == 'cmake' }}
