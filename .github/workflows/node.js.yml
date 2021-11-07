@@ -41,10 +41,11 @@ jobs:
           # - node-addon-api
 
     steps:
-      - uses: actions/checkout@v2
+      - name: NodeJs
+        uses: actions/checkout@v2
 
-      - name: Make Build System Available (CMake) (Windows)
-        if: ${{ matrix.os == 'windows-latest' && matrix.os == 'windows-latest' }}
+      - name: Chocolatey (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
         uses: crazy-max/ghaction-chocolatey@v1
         with:
           args: -h
@@ -74,7 +75,7 @@ jobs:
       - name: CLang (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/LLVM-13.0.0-win64.exe -OutFile ./llvm.exe &&
+          choco install llvm &&
           ./llvm.exe /S &&
           clang-tidy --version &&
           clang-format --version &&
@@ -82,6 +83,18 @@ jobs:
           (Get-Command clang-format).Path &&
           echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
           echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
+
+      # - name: CLang (Windows)
+      #   if: ${{ matrix.os == 'windows-latest' }}
+      #   run: |
+      #     Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/LLVM-13.0.0-win64.exe -OutFile ./llvm.exe &&
+      #     ./llvm.exe /S &&
+      #     clang-tidy --version &&
+      #     clang-format --version &&
+      #     (Get-Command clang-tidy).Path &&
+      #     (Get-Command clang-format).Path &&
+      #     echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
+      #     echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
 
       - name: Make Build System Available (CMake) (MacOS)
         if: ${{ matrix.build-system == 'cmake' && matrix.os == 'macos-latest' }}
@@ -93,7 +106,7 @@ jobs:
 
       - name: Make Build System Available (CMake) (Windows)
         if: ${{ matrix.os == 'windows-latest' && matrix.os == 'windows-latest' }}
-        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && cmake --version
 
       - name: Make Build System Available (XMake)
         if: ${{ matrix.build-system == 'xmake' }}
