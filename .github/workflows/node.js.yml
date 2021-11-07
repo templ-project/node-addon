@@ -23,22 +23,22 @@ jobs:
     strategy:
       matrix:
         os:
-          # - macos-latest
-          # - ubuntu-latest
+          - macos-latest
+          - ubuntu-latest
           - windows-latest
         node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
           - 12.x # to be removed 2022-04-30
-          # - 14.x # to be removed 2023-04-30
-          # - 16.x # to be removed 2024-04-30
+          - 14.x # to be removed 2023-04-30
+          - 16.x # to be removed 2024-04-30
           # - 17.x # to be removed 2022-04-01
         build-system:
-          # - gyp
+          - gyp
           - cmake
           # - xmake
         node-api:
           - nan
-          # - napi
-          # - node-addon-api
+          - napi
+          - node-addon-api
 
     steps:
       - name: NodeJs
@@ -55,14 +55,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: CLang (Linux)
+      - name: Make Clang Available  (Linux)
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           sudo apt-get install -y clang-tidy clang-format &&
           clang-tidy --version &&
           clang-format --version
 
-      - name: CLang (Mac OS)
+      - name: Make Clang Available (Mac OS)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
           brew install llvm &&
@@ -72,7 +72,7 @@ jobs:
           clang-tidy --version &&
           clang-format --version
 
-      - name: CLang (Windows)
+      - name: Make Clang Available (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           choco install llvm &&
@@ -82,18 +82,6 @@ jobs:
           (Get-Command clang-format).Path &&
           echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
           echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
-
-      # - name: CLang (Windows)
-      #   if: ${{ matrix.os == 'windows-latest' }}
-      #   run: |
-      #     Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/LLVM-13.0.0-win64.exe -OutFile ./llvm.exe &&
-      #     ./llvm.exe /S &&
-      #     clang-tidy --version &&
-      #     clang-format --version &&
-      #     (Get-Command clang-tidy).Path &&
-      #     (Get-Command clang-format).Path &&
-      #     echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
-      #     echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
 
       - name: Make Build System Available (CMake) (MacOS)
         if: ${{ matrix.build-system == 'cmake' && matrix.os == 'macos-latest' }}
@@ -135,21 +123,9 @@ jobs:
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
       - name: Code Analysis (!Windows)
-        # if: ${{ matrix.os != 'windows-latest' }}
         run: npm run ca
         env:
           DEBUG: true
-
-      # # TODO: clang-format doesn't work yet
-      # - name: Code Analysis (Windows)
-      #   if: ${{ matrix.os == 'windows-latest' }}
-      #   run: |
-      #     npm run prettier:js:write &&
-      #     npm run lint:write &&
-      #     npm run ca:quality &&
-      #     npm run ca:security
-      #   env:
-      #     DEBUG: true
 
       - name: Code UnitTests
         run: cat binding.gyp && npm run test
