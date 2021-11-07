@@ -93,7 +93,7 @@ jobs:
 
       - name: Make Build System Available (CMake) (Windows)
         if: ${{ matrix.os == 'windows-latest' && matrix.os == 'windows-latest' }}
-        run: install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
       - name: Make Build System Available (XMake)
         if: ${{ matrix.build-system == 'xmake' }}
