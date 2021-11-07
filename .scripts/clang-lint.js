@@ -15,11 +15,13 @@ async function main() {
   let includes = utilsLibraryFolders({}).map((include) => `-I${include}`);
   includes = [...new Set(includes)];
 
+  let validBinaries = [];
+
   if (!process.env.CLANG_TIDY_BINARY) {
     const binaries = await Promise.all(
       ['clang-tidy-12', 'clang-tidy-11', 'clang-tidy-10', 'clang-tidy'].map((binary) => osGetCommandPath(binary)),
     );
-    const validBinaries = binaries.filter((x) => x.length > 0);
+    validBinaries = binaries.filter((x) => x.length > 0);
 
     if (validBinaries.length === 0) {
       console.error('C++ linting & prettify are dependent on LLVM CLang binaries.'.red);

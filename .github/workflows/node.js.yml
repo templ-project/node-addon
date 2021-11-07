@@ -135,14 +135,7 @@ jobs:
         run: npm i --legacy-peer-deps
         # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
 
-      - name: Code Analysis (!Windows)
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: npm run ca
-        env:
-          DEBUG: true
-
-      - name: Code Analysis (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
+      - name: Code Analysis
         run: npm run ca
         env:
           DEBUG: true

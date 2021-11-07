@@ -9,13 +9,14 @@ const colors = require('colors');
 const debug = process.env.DEBUG ? true : false;
 
 async function main() {
+  let validBinaries = [];
   if (!process.env.CLANG_FORMAT_BINARY) {
     const binaries = await Promise.all(
       ['clang-format-12', 'clang-format-11', 'clang-format-10', 'clang-format'].map((binary) =>
         osGetCommandPath(binary),
       ),
     );
-    const validBinaries = binaries.filter((x) => x.length > 0);
+    validBinaries = binaries.filter((x) => x.length > 0);
 
     if (validBinaries.length === 0) {
       console.error('C++ linting & prettify are dependent on LLVM CLang binaries.'.red);
