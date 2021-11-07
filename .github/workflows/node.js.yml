@@ -72,10 +72,11 @@ jobs:
           ./llvm.exe /S &&
           clang-tidy --version &&
           clang-format --version &&
-          (Get-Command clang-tidy).FullName &&
-          (Get-Command clang-format).FullName
+          (Get-Command clang-tidy).Path &&
+          (Get-Command clang-format).Path &&
+          exit 1
 
-      - name: Make Build System Available (CMake)
+      - name: Make Build System Available (CMake) (Linux)
         if: ${{ matrix.build-system == 'cmake' }}
         run: sudo apt-get install -y cmake && cmake --version
 
