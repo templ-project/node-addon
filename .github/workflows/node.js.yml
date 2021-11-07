@@ -43,6 +43,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Make Build System Available (CMake) (Windows)
+        if: ${{ matrix.os == 'windows-latest' && matrix.os == 'windows-latest' }}
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: -h
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -87,8 +93,7 @@ jobs:
 
       - name: Make Build System Available (CMake) (Windows)
         if: ${{ matrix.os == 'windows-latest' && matrix.os == 'windows-latest' }}
-        uses: crazy-max/ghaction-chocolatey@v1
-        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && cmake --version
+        run: install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
       - name: Make Build System Available (XMake)
         if: ${{ matrix.build-system == 'xmake' }}
