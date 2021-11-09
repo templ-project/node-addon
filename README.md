@@ -1,4 +1,6 @@
-# Templ Node.js Addon Nan
+# Templ Node.js Addon
+
+[![Node.js CI](https://github.com/templ-project/node-addon/actions/workflows/node.js.yml/badge.svg)](https://github.com/templ-project/node-addon/actions/workflows/node.js.yml)
 
 <!-- https://hits.seeyoufarm.com/ -->
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Ftempl-project%2Fnode&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
@@ -44,15 +46,17 @@
 
 > *Any fool can write code that a computer can understand. Good programmers write code that humans can understand.* – Martin Fowler
 
-> **nodejs-addon-nan** is a template project, designed by [Templ Project](http://templ-project.github.io). Please download it and adapt it as you see fit.
->
-> **nodejs-addon-nan** includes instructions for initializing a new
-> **NodeJs Nan** addon project, and configuring it for development, unit
-> testing as well as code linting and analysis.
+> **nodejs-addon** is a template project for developing Node.js addons using C/C++. 
+> It includes support for formatting and linting both C/C++ and JavaScript code, 
+> tools for assuring code quality as well as instructions to code further using two 
+> of the most popular IDEs on the market. It can also be configured to use any of the 
+> three C/C++ APIs provided by Node.js.
+> 
+> Please download it and adapt it as you see fit.
 
 <!-- TOC -->
 
-- [Templ Node.js Addon Nan](#templ-nodejs-addon-nan)
+- [Templ Node.js Addon](#templ-nodejs-addon)
   - [Getting Started](#getting-started)
     - [Project Description](#project-description)
       - [Linters, Code Analysis, Formatters](#linters-code-analysis-formatters)
@@ -85,11 +89,10 @@
 
 ### Project Description
 
-The template is trying to cover multiple build systems, with **[node-gyp](https://github.com/nodejs/node-gyp)** as the default one and it is always offering configuration support for two popular IDEs: Visual Studio Code and CLion.
-
-Project configuration is done using `.scripts/configure.js` script (as it is described bellow), and the files/templates from the `.scripts/configure` folder.
-
-When a build system configuration file is generated, please do not manually alter that file, but alter it's template from `.scripts/configure` and then run the configuration command as described bellow.
+The template is trying to cover multiple build systems as 
+* [node-gyp](https://github.com/nodejs/node-gyp) (default), using [Gyp](https://gyp.gsrc.io/) build system
+* [cmake-js](https://www.npmjs.com/package/cmake-js), using [CMake](https://cmake.org/) build system
+* [xmake](https://xmake.io/#/) *(under development)*
 
 #### Linters, Code Analysis, Formatters
 
@@ -108,7 +111,6 @@ When a build system configuration file is generated, please do not manually alte
 - [jscpd](https://github.com/kucherenko/jscpd) for code analisys as copy paste detector
 - [dependency-checker](https://github.com/jeremylong/DependencyCheck) (designed by [OWASP](https://owasp.org/www-project-dependency-check/)) for code analisys, will check dependencies & security
 
-> **dependency-checked** is not used by default. The option exists, however using it, especially in pre-commit hooks takes a lot of time. We recommend using this analysis tool as part of CI pipelines.
 #### Git Hooks
 
 Git hooks are configured using [husky](https://github.com/typicode/husky)
@@ -116,7 +118,11 @@ Git hooks are configured using [husky](https://github.com/typicode/husky)
 
 ##### pre-commit
 
-Found in `.husky/pre-commit`, script will run `ca` and `test` scripts from `package.json`. Please take a look in the `package.json` file and follow the two mentioned scripts to understand what they do and how they are called.
+Found in `.husky/pre-commit`, script will run 
+* `.scripts/configure.js` script, keeping your configuration stable, as well as 
+* `ca` and `test` scripts from `package.json`. 
+
+Please take a look in the `package.json` file and follow the two mentioned scripts to understand what they do and how they are called.
 
 ##### commit-msg
 
@@ -126,9 +132,9 @@ Found in `.husky/commit-msg`, script will run a [commitlint](https://commitlint.
 
 ##### For Linux
 
-- Please install `git`, `gcc/g++`, `make`
-- Please install `clang-formatter` && `clang-tidy`
-- Please also install Python 3.6 or above.
+- `git`, `gcc/g++`, `make`
+- `clang-formatter` && `clang-tidy`
+- Python 3.6 or above.
 - Depending on the build system, please install: 
   - **NodeGyp**: All requirements are set as default in the above list.
   - **CMake**: `make`, `cmake`
@@ -138,7 +144,11 @@ Found in `.husky/commit-msg`, script will run a [commitlint](https://commitlint.
 
 ```bash
 # i.e ubuntu
-PY_SUBVER=6 sudo apt-get install build-essential git make python3.$PY_SUBVER -y
+PY_SUBVER=6 \
+  sudo apt-get install -y \
+    build-essential git make \
+    python3.$PY_SUBVER \
+    clang-format clang-tidy
 # for CMake
 sudo apt-get install cmake
 # for XMake (see https://xmake.io/#/guide/installation)
@@ -147,38 +157,56 @@ bash <(curl -fsSL https://xmake.io/shget.text)
 
 ##### For MacOS
 
-> Help required. Project is not yet configured for MacOS.
+```bash
+brew install git
+brew install llvm && \
+  ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format" && \
+  ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy" && \
+  ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
+# for CMake
+brew install cmake
+# for XMake (see https://xmake.io/#/guide/installation)
+bash <(curl -fsSL https://xmake.io/shget.text)
+```
 
 ##### For Windows
 
-- Please install [git-scm](https://git-scm.com/download/win) tool.
-- Please install [Microsoft Build Tools 2017](https://visualstudio.microsoft.com/) or, at least [Microsoft Visual Studio Community 2019 ](https://visualstudio.microsoft.com/vs/)
-  - Or, run `npm i -g windows-build-tools` (will silent install Microsoft Build Tools 2017)
-- Please install [Python 3.6 or above](https://www.python.org/downloads/windows/)
-- Please install [clang+llvm](https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1)
-<!-- - Please install `make`
+- [git-scm](https://git-scm.com/download/win) tool.
+- `make`
   - [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm)
   - [make](https://sourceforge.net/projects/ezwinports/files/) from [ezwinports](https://sourceforge.net/projects/ezwinports/files/)
-  - From [chocolatey](https://chocolatey.org/), run `choco install make` -->
-- Depending on the build system, please install: 
-  - **NodeGyp**: All requirements are set as default in the above list.
-  - **CMake**:
-    - [cmake](https://cmake.org/download/)
-  - **XMake**:
-    - [xmake](https://xmake.io/#/guide/installation)
-> Do not forget NodeGyp is the main build system, so you need its requirements installed whatsoever.
+  - From [chocolatey](https://chocolatey.org/), run `choco install make`
+- [Python 3.6 or above](https://www.python.org/downloads/windows/)
+- [Microsoft Build Tools 2017](https://visualstudio.microsoft.com/) or, at least [Microsoft Visual Studio Community 2019 ](https://visualstudio.microsoft.com/vs/)
+  - Or, run `npm i -g windows-build-tools` (will silent install Microsoft Build Tools 2017)
+- [clang+llvm](https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1)
+  - Or run `choco install llvm`
+- For CMake
+  - [cmake](https://cmake.org/download/)
+  - Or, run `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`
+- For XMake:
+  - [xmake](https://xmake.io/#/guide/installation)
+
+```powershell
+choco install git make python
+# Visual Studio needs manual installation
+choco install llvm
+# for CMake
+choco install cmake
+# for XMake (see https://xmake.io/#/guide/installation)
+Invoke-Expression (Invoke-Webrequest 'https://xmake.io/psget.text' -UseBasicParsing).Content
+```
 
 #### Known Issues / Troubleshooting
 
 1. Note that `node-gyp` doesn't support Python 2.7 anymore, so you'll need to install Python 3.6 or above.
-2. **cmake** does not seem to allow debug mode for VS Code
-3. **xmake** is not compiling properly in debug mode
-4. I am pretty sure **node-gyp** is forcing its own c++ standard over the one set by `configure.js` 
+2. [#1](/../../issues/1) **cmake** does not seem to allow debug mode for VS Code
+3. [#2](/../../issues/2) **xmake** is still under development and not compiling properly in debug mode
 
 ### Installation
 
 ```bash
-git clone https://github.com/templ-project/nodejs-addon-nan your_project
+git clone https://github.com/templ-project/nodejs-addon your_project
 cd your_project
 rm -rf .git
 git init
@@ -187,29 +215,28 @@ git add .
 git commit -am "init"
 git push origin master
 npm install
-# yarn install
-# pnpm install
-node .scripts/configure -x gyp -e vscode -ucl
+node .scripts/configure -a node-addon-api -x gyp -e vscode -ucl
 ```
 
 Read [here](manual/configure_command.md) more about the rest of the integrated build systems & the supported IDEs.
+
 ### Development
 
 #### Requirements
 
 Please install:
 - [NodeJs](https://nodejs.org/en/). We support version 12.x and above.
-- a C++ IDE
+- A C++ IDE
   - [Visual Studio Code](https://code.visualstudio.com/) with [ITMCDev C++ Extension Pack](https://marketplace.visualstudio.com/items?itemName=itmcdev.node-cpp-extension-pack)
     - For Linux:
       - [gdb](https://www.gnu.org/software/gdb/) if you plan in using **gdb** as debug tool,
       - if not, [vadimcn.vscode-lldb](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) will help you without any flaws
   - [Jetbrains CLion](https://www.jetbrains.com/clion/)
-  - Please help us supporting other IDEs as well
-- a JavaScript/TypeScript IDE
+  - *Please help us supporting other IDEs as well*
+- A JavaScript/TypeScript IDE
   - [Visual Studio Code](https://code.visualstudio.com/) with [ITMCDev Node Extension Pack](https://marketplace.visualstudio.com/items?itemName=itmcdev.node-extension-pack)
   - [Jetbrains WebStorm](https://www.jetbrains.com/webstorm/)
-  - Please help us supporting other IDEs as well
+  - *Please help us supporting other IDEs as well*
 
 ##### VSCode Configuration
 
@@ -221,9 +248,13 @@ Please read about configuring [Jetbrains CLion](manual/configure_clion.md).
 
 ### Testing
 
+Testing is done using [mocha](https://www.npmjs.com/package/mocha) and [chai](https://www.npmjs.com/package/chai). 
+
 Run unit tests using `npm run test`.
 
 Testing is currently set to use unittest.
+
+> We will try to provide a [Jest](https://www.npmjs.com/package/jest) implementation in the future. If you wish us to rush into it, please submit a ticket.
 
 #### Single Tests
 
