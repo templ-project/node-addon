@@ -54,6 +54,8 @@
 > 
 > Please download it and adapt it as you see fit.
 
+> **Warning!** *This template is provided as is. If you feel you do not have enough documentation, you are always free to read its code. We are developers after all and we are forced daily to read other people's code.*
+
 <!-- TOC -->
 
 - [Templ Node.js Addon](#templ-nodejs-addon)

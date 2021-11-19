@@ -94,7 +94,7 @@ We do recommend two of them, but they are not necessarily the most important one
 Supported IDEs (with configuration instructions), for now, are:
 
 * Visual Studio Code along with ITMCDEV C++ & (NodeJs, Babel and TypeScript) extensions. (Read about [generating configuration files for VSCode](manual/configure_vscode.md))
-* IntelliJ CLang. (Read about [configuring CLang](manual/configure_clang.md))
+* IntelliJ CLion. (Read about [configuring CLion](manual/configure_clion.md))
 
 To configure the IDE, you will need to add `-e <ide>` or `--ide <ide>` to the configuration command.
 

@@ -3,57 +3,89 @@
 <!-- TOC -->
 
 - [Configuring CLion for developing a NodeJs C++ Addon](#configuring-clion-for-developing-a-nodejs-c-addon)
-  - [CMake](#cmake)
-  - [Configuring the project in CLion](#configuring-the-project-in-clion)
-    - [Open Project Wizard](#open-project-wizard)
-      - [Windows](#windows)
+  - [Generic](#generic)
+  - [NodeJs (Npm) Configuration](#nodejs-npm-configuration)
+    - [Add Node Configuration](#add-node-configuration)
+    - [Configure Running Options](#configure-running-options)
+    - [Adding "Before Launch" Option ("npm run build")](#adding-before-launch-option-npm-run-build)
+    - [Configuring "npm run build".](#configuring-npm-run-build)
+    - [Conclusions](#conclusions)
+  - [CMake Configuration](#cmake-configuration)
+    - [Open Project Wizzard](#open-project-wizzard)
+      - [Windows Visual Studio Configuration](#windows-visual-studio-configuration)
     - [Run/Debug Configuration](#rundebug-configuration)
 
 <!-- /TOC -->
 
-> CLion is a very gifted C/C++ IDE. However we could not make clion work with `node-gyp`. Instead, when using CLion, please use `node .scripts/clion-config.js --use-cmake-js` for now.
-> 
-> You can still use `node-gyp` to build the project, but CLion needs to be configured using `cmake-js`. We hope to fix this soon.
-> 
-> By default, CLion is configured to use CMake
+### Generic
 
-### CMake
+> First open the dropdown menu near the run button in the top right of the IDE, and click on **Edit Configurations...** option.
 
-For this, a default [CMakeLists.tst](../CMakeLists.tst) file has been added to the project. File that can be adapted to the node version you want to develop for, by running `node .scripts/clion-config.js`.
-
-> The adaptation of the `CMakeLists.tst`, done with the `clion-config.js` is strictly for enabling CLion to read dependent node libraries.
-> Otherwise:
-> * `node-gyp` is completly independent of the CMakeLists.txt file
-> * `cmake-js` is configured to ignore the definitions added and may need additional configuration for other external libraries
+<img src="manual/../clion_edit_configurations.png">
 
 
-```powershell
-# add any other dependencies before or after this if
+### NodeJs (Npm) Configuration
 
-if (CMAKE_JS_VERSION)
-else()
-  # start clion-config here
-  # leave this section unaltered; it will be changed by the `clion-config.js` script
-  include_directories(/home/dragosc/.cache/node-gyp/12.20.2/include/node)
-  include_directories(/home/dragosc/Workspace/templates/node-addon-nan/node_modules/nan)
-  # end clion-config here
-endif()
+> Since, most modules in this world are configured with `node-gyp`, we feel it's important to start with this configuration and move to the `cmake` one after.
 
-# add any other dependencies before or after this if
-```
+#### Add Node Configuration
+
+First, click on the **+** (plus) icon in the top left of the new opened window, and select **npm**. This will start the wizzard for creating a new **npm** driven application.
+
+<img src="manual/../clion_new_npm_config.png">
+
+#### Configure Running Options
+
+A new window will appear, which will allow you to configure the node running script
+
+<img src="manual/../clion_new_npm_runner_config.png">
+
+Please fill in will the following values:
+* Command: (keep it to) *run*
+* Scripts: *test*
+* Node interpreter: *path to node* (in our screenshot we use nvm)
+* Package manager: *npm* (can be any other that you use) 
+
+#### Adding "Before Launch" Option ("npm run build")
+
+Unfortunately, this is not the last step. In order to be able to compile the C++ code before running the test suite (as configured above), you'll have to configure a **Before Launch** command (script). To do that, please click on the **+** (plus icon) and select **Run npm script**
+
+<img src="manual/../clion_before_launch_new_npm_script.png">
+
+#### Configuring "npm run build".
+
+Yet another window will appear for configuring this new "before launch" script.
+
+<img src="manual/../clion_before_launch_script_config.png">
+
+Please fill in will the following values:
+* Command: (keep it to) *run*
+* Scripts: *build:dev* (`build:dev` will allow you to also debug your code;if you do not wish yo debug, you can also use `build` script)
+* Node interpreter: *path to node* (in our screenshot we use nvm)
+* Package manager: *npm* (can be any other that you use)
+
+#### Conclusions
+
+Using this configuration, you will be able to build and run the unit tests for the new addon. We leave it on you, to discover how to run a single test (hint: *Arguments:*)
+
+### CMake Configuration
+
+> Since, CLion is a C++ ide, and the main build system that's integrated into it, is CMake, we will continue first with the CMake one.
+
+For this, a default [CMakeLists.tst](../CMakeLists.tst) file has been added to the project. File that can be adapted to the node version you want to develop for, by running `node .scripts/clion-config.js -e clion <...other args>`. 
 
 
-### Configuring the project in CLion
+#### Open Project Wizzard
 
-#### Open Project Wizard
-
-When opening the project, during the **Open Project Wizzard** process, please set the `Build directory` to `build` as shown in the image bellow.
+When opening the project, during the **Open Project Wizzard** process, please set the `Build directory` to `build` as shown in the image bellow. 
 
 This will enable nodejs to properly read the compiled libraries.
 
 <img src="manual/../open_project_wizard.png">
 
-##### Windows
+> In order to be able to debug, also fill in the *CMake Options:* field with **-DCMAKE_BUILD_TYPE=Debug**. This will trigger the build in debug mode, and allow you debug your C++ code.
+
+##### Windows Visual Studio Configuration
 
 For Windows, CLion uses as generator for CMake `CodeBlocks - NMake Makefiles` by default which is not the one `cmake-js` will choose.
 
