@@ -72,6 +72,7 @@
         - [For Windows](#for-windows)
       - [Known Issues / Troubleshooting](#known-issues--troubleshooting)
     - [Installation](#installation)
+      - [Configure Command](#configure-command)
     - [Development](#development)
       - [Requirements](#requirements)
         - [VSCode Configuration](#vscode-configuration)
@@ -218,7 +219,9 @@ npm install
 node .scripts/configure -a node-addon-api -x gyp -e vscode -ucl
 ```
 
-Read [here](manual/configure_command.md) more about the rest of the integrated build systems & the supported IDEs.
+#### Configure Command
+
+Read about the [configure command, integrated build systems, supported IDEs and NodeJs APIs](manual/configure_command.md).
 
 ### Development
 

@@ -36,7 +36,7 @@
     "prebuildc": "npm run clean",
     "prepare": "husky install",
     "prerelease": "npm run build",
-    "pretest:single": "npm run build",
+    "#pretest:single": "npm run build",
     "prettier:check": "npm run prettier:cpp:check && npm run prettier:js:check",
     "prettier:cpp:check": "npm run prettier:cpp -- -dry-run",
     "prettier:cpp:write": "npm run prettier:cpp -- -i",
