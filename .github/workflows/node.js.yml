@@ -97,7 +97,7 @@ jobs:
 
       - name: Make Build System Available (CMake) (MacOS)
         if: ${{ matrix.build-system == 'cmake' && matrix.os == 'macos-latest' }}
-        run:  brew install cmake && cmake --version
+        run: brew install cmake && cmake --version
 
       - name: Make Build System Available (CMake) (Linux)
         if: ${{ matrix.build-system == 'cmake' && matrix.os == 'ubuntu-latest' }}
@@ -119,7 +119,7 @@ jobs:
       - name: check (pre configure.js)
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: ls -la $HOME/.cache/node-gyp || ls -la $HOME/.cmake-js/node-x64
-s
+
       - name: configure.js (nan/node-16+)
         if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
         run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc -cpps cxx17
