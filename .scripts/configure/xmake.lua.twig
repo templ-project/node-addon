@@ -67,3 +67,15 @@ target('main')
     "_WINDLL"
 {% endif %}
   )
+  if is_mode("debug") then
+    -- add macro: DEBUG
+    add_defines(
+      "DEBUG",
+      "_DEBUG"
+    )
+    -- enable debug symbols
+    set_symbols("debug")
+
+    -- disable optimization
+    set_optimize("none")
+  end

@@ -20,6 +20,8 @@ module.exports = () => {
   );
 
   packageJson.scripts['build:dev'] = 'npm run build:addon -- --debug';
+  packageJson.scripts['prebuild'] = 'npm run clean';
   packageJson.scripts['prebuild:dev'] = '';
+
   delete packageJson.scripts['prebuild:dev'];
 };
