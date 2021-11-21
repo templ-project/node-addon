@@ -10,6 +10,12 @@
     - [C/Cpp Standard(s)](#ccpp-standards)
     - [IDE](#ide)
   - [Minimal Configuration (.husky/pre-commit)](#minimal-configuration-huskypre-commit)
+  - [Configuration templates](#configuration-templates)
+    - [binding.gyp](#bindinggyp)
+    - [CMakeLists.txt](#cmakeliststxt)
+    - [compile_flags.txt](#compile_flagstxt)
+    - [main.cc](#maincc)
+    - [<del>xmake.lua</del>](#delxmakeluadel)
 
 <!-- /TOC -->
 
@@ -119,3 +125,52 @@ To configure the project for `cmake` build system, `NAN` Node API, and `C++17` s
 ```bash
 node .scripts/configure.js -a nan -x cmake -e none -cpps cxx17
 ```
+
+## Configuration templates
+
+
+### binding.gyp
+
+`binding.gyp` is the configuration file used to compile the NodeJs Addon using `node-gyp` module. 
+
+> Do not modify the this file as it is ignored by git. Please edit the [binding.gyp.twig](../.scripts/configure/binding.gyp.twig) file and run the `configure.js` command again. Otherwise, your changes will be overwritten by the `pre-commit` hook.
+
+### CMakeLists.txt
+
+`CMakeLists.txt` is the configuration file used to compile the NodeJs Addon using `cmake` module. 
+
+> Do not modify the this file as it is ignored by git. Please edit the [CMakeLists.txt.twig](../.scripts/configure/CMakeLists.txt.twig) file and run the `configure.js` command again. Otherwise, your changes will be overwritten by the `pre-commit` hook.
+
+### compile_flags.txt
+
+`compile_flags.txt` is the configuration file used by `clang-tidy` and/or `clang-format` in order to inspect lint and/or format the c/c++ code.
+
+> Do not modify the this file as it is ignored by git. Please edit the [compile_flags.txt.twig](../.scripts/configure/compile_flags.txt.twig) file and run the `configure.js` command again. Otherwise, your changes will be overwritten by the `pre-commit` hook.
+
+
+```
+-Wall
+-I
+/home/dragosc/.cache/node-gyp/12.22.6/include/node
+-I
+/home/dragosc/.cache/node-gyp/12.22.6/include/node/openssl
+-I
+/home/dragosc/Workspace/templates/node-addon/node_modules/node-addon-api
+```
+
+### main.cc
+
+`main.cc` is the main c/c++ file the template will generate for you. It is dependent on the `-a` / `--api` argument, and it cannot be overwritten once it is generated.
+
+If you configured the project poorly, please also add the `-omc` / `--overwrite-main-cc` argument in the command line. 
+
+> **Do not** add `-omc` / `--overwrite-main-cc` to your `pre-commit` file, as it will overwrite your own code.
+
+### <del>xmake.lua</del>
+
+`xmake.lua` is the configuration file used to compile the NodeJs Addon using `xmake` module. 
+
+> Do not use `xmake` builder, unless you're trying to finish the implementation of this build system.
+
+> Do not modify the this file as it is ignored by git. Please edit the [xmake.lua.twig](../.scripts/configure/xmake.lua.twig) file and run the `configure.js` command again. Otherwise, your changes will be overwritten by the `pre-commit` hook.
+

@@ -4,13 +4,16 @@ const supportedBuildSystems = require('./configure/lib/supported-build-systems')
 const supportedCStandards = require('./configure/lib/supported-c-standards');
 const supportedCppStandards = require('./configure/lib/supported-cpp-standards');
 const supportedNodeLibs = require('./configure/lib/supported-node-libs');
+const supportedVscCppModules = require('./configure/lib/supported-vsc-cpp-modules');
 const supportedIdes = require('./configure/lib/supported-ides');
 const bsConfigure = require('./configure/lib/bs-configure');
 const vscodeConfigure = require('./configure/lib/vscode-configure');
 const packageJsonConfigure = require('./configure/lib/package-json-configure');
 const twigCompileCMakeListsTxt = require('./configure/lib/twig-compile-c-make-lists-txt');
+const twigCompileCompileFlagsTxt = require('./configure/lib/twig-compile-compile-flags-txt');
 const twigCompileMainCc = require('./configure/lib/twig-compile-main-cc');
 const errorCodes = require('./configure/lib/error-codes');
+
 // const {
 //   supportedBuildSystems,
 //   supportedCStandards,
@@ -41,10 +44,11 @@ program
   )
   .option('-e, --ide <ide>', `configure an IDE: ${Object.values(supportedIdes).join(', ')}`, supportedIdes.VSCODE)
   .option(
-    '-ucl, --vscode-use-clangd',
-    'configure VSCode to use CLang plugin instead of the default Microsoft Intellisense',
+    '-vsccm, --vscode-cpp-module <vscodeCppModule>',
+    `configure VSCode to a specific C/C++ module: ${Object.values(supportedVscCppModules).join(', ')}`,
+    supportedVscCppModules.VSCODE_CLANGD,
   )
-  .option('-omc, --overwrite-main-cc', 'overwrite main.cc content with default statndard code from template')
+  .option('-omc, --overwrite-main-cc', 'overwrite main.cc content with default standard code from template')
   .option(
     '-cs, --c-standard <cStandards>',
     `C Standard (set the most important as last value): ${Object.keys(supportedCStandards)}`,
@@ -95,6 +99,8 @@ if (
   if (options.ide === supportedIdes.CLION) {
     twigCompileCMakeListsTxt(options);
   }
+
+  twigCompileCompileFlagsTxt(options);
 
   await packageJsonConfigure(options);
 })();

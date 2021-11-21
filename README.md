@@ -77,8 +77,6 @@
       - [Configure Command](#configure-command)
     - [Development](#development)
       - [Requirements](#requirements)
-        - [VSCode Configuration](#vscode-configuration)
-        - [CLion Configuration](#clion-configuration)
     - [Testing](#testing)
       - [Single Tests](#single-tests)
     - [Deployment](#deployment)
@@ -203,8 +201,7 @@ Invoke-Expression (Invoke-Webrequest 'https://xmake.io/psget.text' -UseBasicPars
 #### Known Issues / Troubleshooting
 
 1. Note that `node-gyp` doesn't support Python 2.7 anymore, so you'll need to install Python 3.6 or above.
-2. [#1](/../../issues/1) **cmake** does not seem to allow debug mode for VS Code
-3. [#2](/../../issues/2) **xmake** is still under development and not compiling properly in debug mode
+2. [#2](/../../issues/2) **xmake** is still under development and not compiling properly in debug mode
 
 ### Installation
 
@@ -232,24 +229,17 @@ Read about the [configure command, integrated build systems, supported IDEs and 
 Please install:
 - [NodeJs](https://nodejs.org/en/). We support version 12.x and above.
 - A C++ IDE
-  - [Visual Studio Code](https://code.visualstudio.com/) with [ITMCDev C++ Extension Pack](https://marketplace.visualstudio.com/items?itemName=itmcdev.node-cpp-extension-pack)
+  - [Visual Studio Code](manual/configure_vscode.md)
     - For Linux:
       - [gdb](https://www.gnu.org/software/gdb/) if you plan in using **gdb** as debug tool,
       - if not, [vadimcn.vscode-lldb](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) will help you without any flaws
-  - [Jetbrains CLion](https://www.jetbrains.com/clion/)
+  - [Jetbrains CLion](manual/confgure_clion.md)
   - *Please help us supporting other IDEs as well*
 - A JavaScript/TypeScript IDE
-  - [Visual Studio Code](https://code.visualstudio.com/) with [ITMCDev Node Extension Pack](https://marketplace.visualstudio.com/items?itemName=itmcdev.node-extension-pack)
+  - [Visual Studio Code](https://code.visualstudio.com/)
+    - optional [ITMCDev](https://marketplace.visualstudio.com/search?term=itmcdev&target=VSCode&category=Extension%20Packs&sortBy=Relevance) Node, Babel or TypeScript extension packs.
   - [Jetbrains WebStorm](https://www.jetbrains.com/webstorm/)
   - *Please help us supporting other IDEs as well*
-
-##### VSCode Configuration
-
-Please read about configuring [Visual Studio Code](manual/configure_vscode.md).
-
-##### CLion Configuration
-
-Please read about configuring [Jetbrains CLion](manual/configure_clion.md).
 
 ### Testing
 

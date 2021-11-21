@@ -4,6 +4,7 @@ const path = require('path');
 const colors = require('colors');
 
 const ewrap = require('./utils-error-wrap');
+const supportedVscCppModules = require('./supported-vsc-cpp-modules');
 
 /**
  * Will configure Visual Studio Code .vscode/launch.json file
@@ -18,7 +19,13 @@ module.exports = (options) => {
     console.log(`Configuring ${filePath} ...`.brightBlue);
     const data = require('../settings.json');
 
-    if (options.vscodeUseClangd) {
+    delete data['C_Cpp.intelliSenseEngine'];
+    delete data['[cpp]']['editor.defaultFormatter'];
+
+    // if (options.vscodeCppModule === supportedVscCppModules.CPPTOOLS) {
+    // }
+
+    if (options.vscodeCppModule === supportedVscCppModules.VSCODE_CLANGD) {
       data['C_Cpp.intelliSenseEngine'] = 'Disabled';
       data['[cpp]'] = {
         'editor.defaultFormatter': 'llvm-vs-code-extensions.vscode-clangd',
