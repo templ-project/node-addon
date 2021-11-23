@@ -36,7 +36,7 @@
       "program": "{{nodePath}}",
       "args": ["${workspaceFolder}/node_modules/mocha/bin/mocha", "{{file}}"],
       "cwd": "${workspaceFolder}"
-    }{% endfor %}{% endif %}{% if platform == 'windows' %},
+    }{% endfor %}{% endif %}{% if platform == 'win32' %},
     {
       "type": "cppvsdbg",
       "request": "launch",

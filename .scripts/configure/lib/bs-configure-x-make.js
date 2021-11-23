@@ -20,6 +20,6 @@ module.exports = (options) => {
 
   packageJson.scripts['build:dev'] = 'npm run build:addon';
   packageJson.scripts['prebuild'] = 'npm run clean && xmake f -m release';
-  packageJson.scripts['prebuild:dev'] = 'xmake f -m debug';
+  packageJson.scripts['prebuild:dev'] = 'npm run clean && xmake f -m debug';
   twigCompileXMakeLua(options);
 };

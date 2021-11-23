@@ -9,7 +9,7 @@ const globby = require('globby');
  */
 module.exports = async () => {
   const rootFolder = path.join(__dirname, '..', '..', '..');
-  const files = await globby(path.join(rootFolder, 'test', '*.(test|spec).(j|t)s'));
+  const files = await globby(path.join(rootFolder, 'test', '*.(test|spec).(j|t)s').replace(/\\/gi, '/'));
 
   return files
     .map((f) => f.replace(rootFolder, '.').replace(/\\/g, '/'))
