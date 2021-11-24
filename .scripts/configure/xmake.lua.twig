@@ -1,58 +1,26 @@
 set_languages({{languages}})
 
 {% for folder in folders %}
-	add_includedirs('{{folder}}')
+add_includedirs('{{folder}}')
 {% endfor %}
-
-if is_os("windows") then
-	-- add_ldflags('-undefined dynamic_lookup', {force = true})
-
-	add_linkdirs("{{folders[0]}}/../../$(arch)")
-	add_links("node")
-
-	target('node-gyp')
-	  set_kind('static')
-	  add_files('$(projectdir)/node_modules/node-gyp/src/*.cc')
-	  add_defines(
-	    "USING_UV_SHARED=1",
-	    "USING_V8_SHARED=1",
-	    "V8_DEPRECATION_WARNINGS=1",
-	    "V8_DEPRECATION_WARNINGS",
-	    "V8_IMMINENT_DEPRECATION_WARNINGS",
-	    "OPENSSL_NO_PINSHARED",
-	    "OPENSSL_THREADS",
-	    "BUILDING_NODE_EXTENSION",
-
-      "WIN32",
-      "_CRT_SECURE_NO_DEPRECATE",
-      "_CRT_NONSTDC_NO_DEPRECATE",
-      "_HAS_EXCEPTIONS=0",
-      "HOST_BINARY=\"node.exe\"",
-      "_WINDLL"
-	  )
-    if is_mode("debug") then
-      -- add macro: DEBUG
-      add_defines(
-        "DEBUG",
-        "_DEBUG"
-      )
-      -- enable debug symbols
-      set_symbols("debug")
-
-      -- disable optimization
-      set_optimize("none")
-    end
-end
 
 target('main')
   set_kind('shared')
-  add_files('$(projectdir)/src/*.cc')
+
+  if is_os("windows") then
+    add_links('kernel32', 'user32', 'gdi32', 'winspool', 'comdlg32', 'advapi32', 'shell32', 'ole32', 'oleaut32', 'uuid', 'odbc32', 'DelayImp')
+    add_links("{{folders[0]}}/../../$(arch)/node")
+  end
+
+  add_files(
+    '$(projectdir)/src/*.cc|$(projectdir)/node_modules/node-gyp/src/*.cc'
+  )
+
   after_build(function (target)
     os.mv(target:targetfile(), "$(buildir)/main.node")
   end)
-  if is_os("windows") then
-  add_deps('node-gyp')
-  end
+
+  -- add constants
   add_defines(
     "USING_UV_SHARED=1",
     "USING_V8_SHARED=1",
@@ -63,28 +31,32 @@ target('main')
     "OPENSSL_THREADS",
     "BUILDING_NODE_EXTENSION"
   )
-  if is_os("linux") then
-  add_defines(
-    "_LARGEFILE_SOURCE",
-    "_FILE_OFFSET_BITS=64",
-    "__STDC_FORMAT_MACROS"
-  )
+  if is_plat("linux", "macosx") then
+    -- add linux constants
+    add_defines(
+      "_LARGEFILE_SOURCE",
+      "_FILE_OFFSET_BITS=64",
+      "__STDC_FORMAT_MACROS"
+    )
   end
   if is_os("windows") then
-  add_defines(
-    "WIN32",
-    "_CRT_SECURE_NO_DEPRECATE",
-    "_CRT_NONSTDC_NO_DEPRECATE",
-    "_HAS_EXCEPTIONS=0",
-    "HOST_BINARY=\"node.exe\"",
-    "_WINDLL"
-  )
+    -- add windows constants
+    add_defines(
+      "WIN32",
+      "_CRT_SECURE_NO_DEPRECATE",
+      "_CRT_NONSTDC_NO_DEPRECATE",
+      "_HAS_EXCEPTIONS=0",
+      "HOST_BINARY=\"node.exe\"",
+      "_WINDLL"
+    )
   end
+
   if is_mode("debug") then
     -- add macro: DEBUG
     add_defines(
       "DEBUG",
-      "_DEBUG"
+      "_DEBUG",
+      "V8_ENABLE_CHECKS"
     )
     -- enable debug symbols
     set_symbols("debug")
