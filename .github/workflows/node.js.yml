@@ -139,6 +139,7 @@ jobs:
         run: npm run ca
         env:
           DEBUG: true
+          CLANG_TIDY_TIMEOUT: 100000
 
       - name: Code UnitTests
         run: cat binding.gyp && npm run test
