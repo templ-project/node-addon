@@ -3,15 +3,28 @@
     {
       "target_name": "main",
       "sources": [
-        "src/main.cc"
+{% for file in srcFiles %}
+        "{{file}}"{% if loop.last == false %},{% endif %}
+
+{% endfor %}
       ],
       "link_settings": {},
       "include_dirs": [
+{% if api == 'nan' %}
+        "<!(node -e \"require('nan')\")"
+{% elseif api == 'napi' %}
+{% else %}
         "<!@(node -p \"require('node-addon-api').include\")"
+{% endif %}
       ],
+{% if api == 'node-addon-api' %}
       'defines': ['NAPI_DISABLE_CPP_EXCEPTIONS'],
+{% endif %}
       "cflags_cc": [
-        "-std=c++11"
+{% if api == 'napi' %}
+{% else %}
+        "-std={{cppStandards | last}}"{#  -x c++ #}
+{% endif %}
       ],
       "cflags_cc!": [
         "-std=gnu++1y", # comes from node 12+

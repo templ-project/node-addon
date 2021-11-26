@@ -1,0 +1,7 @@
+{% if api == 'nan' %}
+{% include '.scripts/configure/main_nan.cc' %}
+{% elseif api == 'napi' %}
+{% include '.scripts/configure/main_napic.cc' %}
+{% else %}
+{% include '.scripts/configure/main_napicpp.cc' %}
+{% endif %}

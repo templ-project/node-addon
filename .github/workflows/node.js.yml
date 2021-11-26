@@ -9,6 +9,7 @@ on:
       - main
       - master
       - develop
+      - new_config_script
   pull_request:
     branches:
       - main
@@ -16,31 +17,161 @@ on:
       - develop
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  main:
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+        node-version: # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+          - 12.x # to be removed 2022-04-30
+          - 14.x # to be removed 2023-04-30
+          - 16.x # to be removed 2024-04-30
+          # - 17.x # to be removed 2022-04-01
+        build-system:
+          - gyp
+          - cmake
+          # - xmake
+        node-api:
+          - nan
+          - napi
+          - node-addon-api
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Make CLang Available
-      run: sudo apt-get install -y clang-tidy clang-format
-    - name: Init
-      run: npm i
-    - name: Code Analysis
-      run: npm run ca
-    - name: Code UnitTests
-      run: npm run test
-    - name: Code Build
-      run: npm run build
-    - name: Code Docs
-      if: ${{ matrix.node-version == '14.x' }}
-      run: npm run docs
+      - name: NodeJs
+        uses: actions/checkout@v2
+
+      - name: Chocolatey (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: -h
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: CLang (Linux)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get install -y clang-tidy clang-format &&
+          clang-tidy --version &&
+          clang-format --version
+
+      - name: CLang (Mac OS)
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          brew install llvm &&
+          ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format" &&
+          ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy" &&
+          ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements" &&
+          clang-tidy --version &&
+          clang-format --version
+
+      - name: CLang (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          choco install llvm &&
+          clang-tidy --version &&
+          clang-format --version &&
+          (Get-Command clang-tidy).Path &&
+          (Get-Command clang-format).Path &&
+          echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
+          echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
+
+      # - name: CLang (Windows)
+      #   if: ${{ matrix.os == 'windows-latest' }}
+      #   run: |
+      #     Invoke-WebRequest -Uri https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.0/LLVM-13.0.0-win64.exe -OutFile ./llvm.exe &&
+      #     ./llvm.exe /S &&
+      #     clang-tidy --version &&
+      #     clang-format --version &&
+      #     (Get-Command clang-tidy).Path &&
+      #     (Get-Command clang-format).Path &&
+      #     echo "CLANG_TIDY_BINARY=$((Get-Command clang-tidy).Path.Replace('\', '/'))" >> $env:GITHUB_ENV &&
+      #     echo "CLANG_FORMAT_BINARY=$((Get-Command clang-format).Path.Replace('\', '/'))"  >> $env:GITHUB_ENV
+
+      - name: Make Build System Available (CMake) (MacOS)
+        if: ${{ matrix.build-system == 'cmake' && matrix.os == 'macos-latest' }}
+        run: brew install cmake && cmake --version
+
+      - name: Make Build System Available (CMake) (Linux)
+        if: ${{ matrix.build-system == 'cmake' && matrix.os == 'ubuntu-latest' }}
+        run: sudo apt-get install -y cmake && cmake --version
+
+      - name: Make Build System Available (CMake) (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && cmake --version
+
+      - name: Make Build System Available (XMake)
+        if: ${{ matrix.build-system == 'xmake' }}
+        # run: bash <(curl -fsSL https://xmake.io/shget.text)
+        run: echo bash <(curl -fsSL https://xmake.io/shget.text)
+
+      - name: npm i (pre configure.js)
+        run: npm i --legacy-peer-deps || true
+        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+
+      - name: check (pre configure.js)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: ls -la $HOME/.cache/node-gyp || ls -la $HOME/.cmake-js/node-x64
+
+      - name: configure.js (nan/node-16+)
+        if: ${{matrix.node-version == '16.x' && matrix.node-api == 'nan'}}
+        run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc -cpps cxx17
+
+      - name: configure.js
+        if: ${{matrix.node-version != '16.x' || (matrix.node-version == '16.x' && matrix.node-api != 'nan')}}
+        run: node .scripts/configure.js -a ${{matrix.node-api}} -x ${{ matrix.build-system }} -e vscode -omc
+
+      - name: post configure.js
+        run: cat binding.gyp && cat compile_flags.txt
+
+      - name: (re) npm i
+        run: npm i --legacy-peer-deps
+        # --legacy-peer-deps comes because of eslint-plugin-sonar which has an older dependency for eslint
+
+      - name: Code Analysis
+        run: npm run ca
+        env:
+          DEBUG: true
+
+      - name: Code UnitTests
+        run: cat binding.gyp && npm run test
+
+      - name: Code Build
+        run: npm run build
+
+      - name: Code Docs
+        if: ${{ matrix.node-version == '16.x' }}
+        run: npm run docs
+
+      - name: release-it
+        if: contains(github.ref, "master")
+        uses: TheRealWaldo/release-it@v0.7.2
+        with:
+          json-opts: '{"dry-run": true, "npm": { "publish": false } }'
+#   sonarcloud:
+#     name: SonarCloud
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#       - name: Init
+#         run: npm i
+#       - name: Code Analysis
+#         run: npm run lint:log || true
+#       - name: Code UnitTests
+#         run: npm run test
+#       - name: Build Wrapper
+#         run: build-wrapper-linux-x86-64 --out-dir bw-output npm run build
+#       - name: SonarCloud Scan
+#         uses: SonarSource/sonarcloud-github-action@master
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
