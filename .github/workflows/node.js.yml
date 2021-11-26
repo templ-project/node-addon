@@ -154,7 +154,7 @@ jobs:
         if: contains(github.ref, "master")
         uses: TheRealWaldo/release-it@v0.7.2
         with:
-          json-opts: '{"dry-run": true}'
+          json-opts: '{"dry-run": true, "npm": { "publish": false } }'
 #   sonarcloud:
 #     name: SonarCloud
 #     runs-on: ubuntu-latest
