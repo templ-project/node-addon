@@ -15,6 +15,7 @@
     - [CMakeLists.txt](#cmakeliststxt)
     - [compile_flags.txt](#compile_flagstxt)
     - [main.cc](#maincc)
+    - [package.json](#packagejson)
     - [<del>xmake.lua</del>](#delxmakeluadel)
 
 <!-- /TOC -->
@@ -165,6 +166,20 @@ node .scripts/configure.js -a nan -x cmake -e none -cpps cxx17
 If you configured the project poorly, please also add the `-omc` / `--overwrite-main-cc` argument in the command line. 
 
 > **Do not** add `-omc` / `--overwrite-main-cc` to your `pre-commit` file, as it will overwrite your own code.
+
+### package.json
+
+We all know what `package.json` stands for. In order to understand the possible changes that `package.json` suffers, we advise you to check:
+
+* [bs-configure-c-make.js](../.scripts/configure/lib/bs-configure-c-make.js)
+* [bs-configure-clear.js](../.scripts/configure/lib/bs-configure-clear.js)
+* [bs-configure-gyp.js](../.scripts/configure/lib/bs-configure-gyp.js)
+* <del>[bs-configure-x-make.js](../.scripts/configure/lib/bs-configure-x-make.js)</del>
+* [package-json-configure.js](../.scripts/configure/lib/package-json-configure.js)
+
+All this JavaScript scripts, will change `package.json` script tags like `build`, `build:*`, `gypfile`, etc. This thing happens when you choose to change from one build system to another.
+
+> **Do not** change `package.json` script elements without inspecting the `configure.js` tool for possible automated changes.  
 
 ### <del>xmake.lua</del>
 

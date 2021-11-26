@@ -149,6 +149,12 @@ jobs:
       - name: Code Docs
         if: ${{ matrix.node-version == '16.x' }}
         run: npm run docs
+
+      - name: release-it
+        if: contains(github.ref, "master")
+        uses: TheRealWaldo/release-it@v0.7.2
+        with:
+          json-opts: '{"dry-run": true}'
 #   sonarcloud:
 #     name: SonarCloud
 #     runs-on: ubuntu-latest
