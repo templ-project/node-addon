@@ -55,7 +55,7 @@ async function main() {
     if (debug) {
       console.log(command.command.join(' '));
     }
-    const {stdout, stderr, code} = await osPspawn(command.command, (timeout = process.env.CLANG_TIDY_TIMEOUT || 20000));
+    const {stdout, stderr, code} = await osPspawn(command.command, process.env.CLANG_TIDY_TIMEOUT || 20000);
     if (code !== 0) {
       if (stdout.match(/: error:/) || stderr.match(/: error:/)) {
         console.log(`${command.file}`.red);
