@@ -1,6 +1,6 @@
 {
   "name": "templ-project-nodejs-addon",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "NodeJs Addon Project Template using Node Addon Api",
   "main": "src/index.js",
   "scripts": {
