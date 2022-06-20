@@ -3,6 +3,7 @@
     {
       "target_name": "main",
       "sources": [
+        "lib/reverse.cpp",
         "src/main.cc"
       ],
       "link_settings": {},
@@ -11,7 +12,7 @@
       ],
       'defines': ['NAPI_DISABLE_CPP_EXCEPTIONS'],
       "cflags_cc": [
-        "-std=c++11"
+        "-std=c++17"
       ],
       "cflags_cc!": [
         "-std=gnu++1y", # comes from node 12+
