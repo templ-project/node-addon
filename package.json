@@ -88,7 +88,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-sonar": "^0.8.0",
     "eslint-plugin-sonarjs": "^0.13.0",
-    "globby": "13.1.2",
+    "globby": "^11.1.0",
     "husky": "^8.0.1",
     "jscpd": "^3.4.5",
     "license-checker": "^25.0.1",
